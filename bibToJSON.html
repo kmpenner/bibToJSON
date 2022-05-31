@@ -23,6 +23,30 @@
     <script type="text/javascript">
         const conversions = [
             {
+                'style': 'Fenlason i',
+                'type': 'article-journal',
+                'bibre': /(?<creator>[À-ž\w,. &'’-]+)\. “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿가-ퟻ\w\sḤ&…,'‘’"„“()+<>\/\[\];:?—–-]+)\.?”(<i> | <i>)(?<publication>[À-ž가-ퟻ\w :,&'\/\[\]’]+)<\/i> (?<volume>[\d]{1,3}),?( no\. (?<issue>[\d]{1,3}(-\d{1,3})?))? \((?<date>([\w ,]+)?[0-9]{4,4})\): (?<pages>[\d–-]+)\.(?:\s+[Aa]bstract:\s+(?<abstract>.+)$)?/gm,
+                'JSONTemplate': '{"type": "article-journal", "creator": "$<creator>", "title": "$<title>", "container-title": "$<publication>", "volume": "$<volume>", "issue": "$<issue>", "issued": {"literal": "$<date>"}, "page":"$<pages>", "abstract":"$<abstract>"}'
+            },
+            {
+                'style': 'Fenlason i',
+                'type': 'chapter',
+                'bibre': /(?<creator>[À-ž̀-ͯΐΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w &.'’,-]+)\. “(?<title>[.À-ž̀-ͯΐΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\wḤḤ\s&…,'‘’„“()+<>\/\[\];:!?—–-]+)[?.,]” In( <i>|<i> )(?<publication>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\sḤ&…,'‘’„“(=)\/\[\];:?—–-]+)<\/i>(, ed(ited by|\.) (?<editor>[À-ž\w][.À-ž̀-ͯ\w '’,-]+))?, (?<pages>[\d–-]+)\. (?<place>[À-ž\ẁ-ͯ &;\/'’,-]+):[  ](?<publisher>[.À-ž\w\/ &;'’-]+),[  ](?<date>[0-9]{4,4})[a-z]?\.(?:\s\s?[Aa]bstract:\s(?<abstract>.+)$)?/gm,
+                'JSONTemplate': '{"type": "chapter", "creator": "$<creator>", "title": "$<title>", "container-title": "$<publication>", "editor": {"literal": "$<editor>"}, "volume": "$<volume>", "issue": "$<issue>", "issued": {"literal": "$<date>"}, "page":"$<pages>", "abstract":"$<abstract>"}'
+            },
+            {
+                'style': 'Fenlason i',
+                'type': 'book',
+                'bibre': /(?<creator>[A-Z](?<postCapital>[À-ž̀-ͯ\w &'’,-]|(?<initial>(?<= [A-Z])\.))+(?:, ed)?)\.\s<i>(?<bookTitle>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\wḤḤ\s&…,'‘’„“”()+\/\[\];:?—–-]+)(<\/i>\.|\.<\/i>)(?:\s(?<edition>[\w.]+)\sed.)?(?:\sEdited by (?<editor>[\w\s.]+)\.)?(?:\sTranslated by (?<translator>[\w\s.]+)\.)?\s(?<place>[À-ž̀-ͯ\w &',;’]+): (?<publisher>[À-ž̀-ͯ\w &;.’-]+)\)?, (?<date>[0-9]{4,4})[a-z]?\.(?:\s+[Aa]bstract:\s(?<abstract>[^"\n]+)$)?/gm,
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "editor": {"literal": "$<editor>"}, "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "abstract":"$<abstract>", "issued": {"literal": "$<date>"}}'
+            },
+            {
+                'style': 'Fenlason i',
+                'type': 'thesis',
+                'bibre': /(?<creator>[A-Z](?<postCapital>[À-ž̀-ͯ\w &'’,-]|(?<initial>(?<= [A-Z])\.))+(?:, ed)?)\.\s(<i>|“)(?<bookTitle>[A-Z][À-ž̀-ͯ\w\d\s&,.'’“\[\]();:?—–\-]+)(<\/i>\.|.”) (?:(?<thesisType>[. \w’]+ (Thesis|diss.)),) (?<publisher>[À-ž̀-ͯ\w &;.’-]+)\)?, (:(?<place>[À-ž̀-ͯ\w, &;.’-]+), )?(?<date>[0-9]{4,4})[a-z]?\.(?:\s[Aa]bstract:\s(?<abstract>.+)$)?/gm,
+                'JSONTemplate': '{"type": "thesis", "creator": "$<creator>", "title": "$<bookTitle>", "event-place": "$<place>", "genre": "$<thesisType>", "publisher": "$<publisher>", "publisher-place": "$<place>", "collection-number": "$<seriesNumber>", "abstract":"$<abstract>", "issued": {"literal": "$<date>"}}'
+            },
+            {
                 'style': 'APA',
                 'type': 'basic book',
                 'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?\-]+)\. (?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\)?\./gm,
@@ -31,54 +55,104 @@
             {
                 'style': 'APA',
                 'type': 'book',
-                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?-]+)(?: \((?<translator>[À-ž\w\d\s&,'’():.?]+), Trans\.)?(?:(?<series>[À-ž\w\d\s&,'’():?]+))?\. ((?<edition>[\d\w]+) ed.; )?\(?(?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\)?\./gm,
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?–—-]+)(?: \((?<translator>[À-ž\w\d\s&,'’():.?]+), Trans\.)?(?:(?<series>[À-ž\w\d\s&,'’():?]+))?\. ((?<edition>[\d\w]+) ed.; )?\(?(?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\)?\./gm,
                 'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "issued": {"literal": "$<date>"}}'
             },
             {
                 'style': 'APA',
                 'type': 'detailed book',
                 'bibre': /(?<creator>[À-ž\w &.'’,-]+)\. \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’:?-]+) \( ?(:?(?<editor>[À-ž\w &.'’,-]+), Eds?\.)?(?:; )(?:(?<translator>[À-ž\w &.'’,-]+), Trans\.)?(?:; )(?<locInArchive>[\w]+)?(?:; )?(?<edition>[\w \d]+)?(?:, )(?:Vol. (?<volume>[\d]+))?\)\. (?<publisher>[À-ž\w &.'’,-]+)(:?; (?<archive>[À-ž\w &'’,-]+))?.(?: (?<url>[.\w:\/]+))?/gm,
-                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "issued": {"literal": "$<date>"}}'
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>","editor": {"literal": "$<editor>"}, "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>",  "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
             },
-                
+            {
+                'style': 'Fenlason',
+                'type': 'edited book',
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+)\. (?<bookTitle>[À-ž\w\d\s&,'’“”\[\]():?—–\-]+)\. (?:Edited by (?<editor>[À-ž\w &.'’,-]+)\. )(?<place>[À-ž\w &',;’]+): (?<publisher>[À-ž\w &'’-]+)\)?, (?<date>[0-9]{4,4})[a-z]?\./gm,
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "editor": {"literal": "$<editor>"}, "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
+            },
+            {
+                'style': 'Fenlason',
+                'type': 'translated book',
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+)\. (?<bookTitle>[À-ž\w\d\s&,'’“”\[\]():?—–\-]+)\. Translated by (?<translator>[À-ž\w &'’.-]+). (?<place>[À-ž\w &',;’]+): (?<publisher>[À-ž\w &'.’-]+)\)?, (?<date>[0-9]{4,4})[a-z]?\./gm,
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
+            },
+                    
+            {
+                'style': 'Fenlason',
+                'type': 'chapter',
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+)\. “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\d\s&…,'‘’„“()<>\/\[\];:?—–-]+)[?.,]” In <i>(?<publication>[?—À-ž\w &'‘’“”,:\d()=—–-]+)<\/i>(, edited by (?<editor>[À-ž\w][.À-ž\w '’,-]+))?, (?<pages>[\d–-]+)\. (?<place>[À-ž\w &;'’,]+): (?<publisher>[À-ž\w &'’-]+), (?<date>[0-9]{4,4})[a-z]?\./gm,
+                'JSONTemplate': '{"type": "chapter", "creator": "$<creator>", "title": "$<title>", "container-title": "$<publication>", "editor": {"literal": "$<editor>"},"volume": "$<volume>", "issue": "$<issue>", "issued": {"literal": "$<date>"}, "page":"$<pages>"}'
+            },
+            {
+                'style': 'Fenlason',
+                'type': 'book',
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+(?:, ed)?)\. (?<bookTitle>[À-ž\w\d\s&,'’“”\[\]();:?—–\-]+)\. (?<place>[À-ž\w &',;’]+): (?<publisher>[À-ž\w &'.’-]+)\)?, (?<date>[0-9]{4,4})[a-z]?\./gm,
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
+            },
+            {
+                'style': 'Fenlason',
+                'type': 'article-journal',
+                'bibre': /(?<creator>[À-ž\w &'’-]+,[À-ž\w &.'’-]+)\. “(?<title>[À-ž\w\d\s&,'‘’():?-]+)\.” (?<publication>[À-ž\w &'’]+) (?<volume>[\d]{1,3})(, no\. (?<issue>[\d]{1,3}))? \((?<date>([\w ,]+)?[0-9]{4,4})\): (?<pages>[\d–-]+)\./gm,
+                'JSONTemplate': '{"type": "article-journal", "creator": "$<creator>", "title": "$<title>", "container-title": "$<publication>", "volume": "$<volume>", "issue": "$<issue>", "issued": {"literal": "$<date>"}, "page":"$<pages>"}'
+            },
+             {
+                'style': 'Fenlason',
+                'type': 'chapter',
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+)\. “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\d\s&…,'‘’„“()\/\[\];:?—–-]+)[?.,]” In (?<publication>[?—À-ž\w &'’,.:\d()=—–-]+), edited by (?<editor>[À-ž\w][.À-ž\w '’,-]+), (?<pages>[\d–-]+)\. (?<place>[À-ž\w &'’,]+): (?<publisher>[À-ž\w &'’-]+), (?<date>[0-9]{4,4})[a-z]?\./gm,
+                'JSONTemplate': '{"type": "chapter", "creator": "$<creator>", "title": "$<title>", "container-title": "$<publication>","editor": {"literal": "$<editor>"}, "volume": "$<volume>", "issue": "$<issue>", "issued": {"literal": "$<date>"}, "page":"$<pages>"}'
+            },
+                 
             {
                 'style': 'Ross',
                 'type': 'book with edition and series',
-                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})[a-z]?\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?\-]+)\. (?:(?<edition>\d{1,3})[snrt][tdh] ed\.?, )?(?<series>[À-ž\w &:'’]+)\. (?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\./gm,
-                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "issued": {"literal": "$<date>"}}'
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})[a-z]?\)\. (?<bookTitle>[À-ž\w\d\s&,'’“”():?–\-]+)\. (?:(?<edition>\d{1,3})[snrt][tdh] ed\.?, )?(?:(?<series>[À-žA-Za-z &:'’()]+)(?: (?<seriesNumber>[\d\.]+?\d))?)?[\.;] \(?(?<place>[À-ž\w &'’]+)[:,] (?<publisher>[À-ž\w &'’-]+)\)?\./gm,
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
             },
                 
             {
                 'style': 'Ross',
                 'type': 'book',
-                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?]+)(?: \((?<translator>[À-ž\w\d\s&,'’():.?]+), [Tt]ransl?\.)?(?:(?<series>[À-ž\w\d\s&,'’():?]+))? ((?<edition>[\d\w]+) ed.; )?\(?(?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\)?\./gm,
-                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "translator": "$<translator>", "editor": "?<editor>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "issued": {"literal": "$<date>"}}'
+                'bibre': /(?<creator>[À-ž\w &.'’,-–]+) \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?–]+)(?: \((?<translator>[À-ž\w\d\s&,'’():.?]+), [Tt]ransl?\.)?(?:(?<series>[À-ž\w\s&,'’():?]+))? ((?<edition>[\d\w]+) ed.; )?\(?(?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\)?\./gm,
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "translator": "$<translator>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "issued": {"literal": "$<date>"}}'
             },
                              
             {
                 'style': 'Ross',
                 'type': 'book edition',
-                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?-]+)\.?(?: \((?<translator>[À-ž\w\d\s&,'’():.?]+), [Tt]ransl?\.)?(?:(?<series>[À-ž\w\s&,'’]+)(?: (?<seriesNumber>[\d\.]+?\d))?)?\. ((?<edition>[\d\w]+) ed.; )?\(?(?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\)?\./gm,
-                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "translator": "$<translator>", "editor": "?<editor>", "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)\. (?<bookTitle>[À-ž\w\d\s&,'’():?-]+)\.?(?: \((?<translator>[À-ž\w\d\s&,'’():.?]+), [Tt]ransl?\.)?(?:(?<series>[À-ž\w\s&,'’]+)(?: (?<seriesNumber>[\d\.]+?\d))?)?[\.;] ((?<edition>[\d\w]+) ed.; )?\(?(?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\)?\./gm,
+                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<bookTitle>", "translator": "$<translator>", "editor": {"literal": "$<editor>"}, "publisher": "$<publisher>", "publisher-place": "$<place>", "edition": "$<edition>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
             },
             {
                 'style': 'Ross',
                 'type': 'article-journal',
-                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)[.,] “(?<title>[À-ž\w\d\s&,'‘’():?-]+)[.,]” (?<publication>[À-ž\w &'’]+) (?<volume>[\d]{1,3})(?:\.(?<issue>[\d]{1,3}))?: (?<pages>[\d–-]+)\./gm,
-                'JSONTemplate': '{"type": "article-journal", "creator": "$<creator>", "title": "$<title>", "publication": "$<publication>", "volume": "$<volume>", "issue": "$<issue>", "issued": {"literal": "$<date>"}, "page":"$<pages>"}'
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})[a-z]?\)[.,] “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\d\s&…,;'‘’*()\/\[\]:?—–-]+)[?.,]” (?<publication>[̊À-ž\w &'’,\/]+) (?<volume>[\d]{1,3}(?:[-\–][\d]{1,3})?)(?:\.(?<issue>[\d]{1,3}([-\–][\d]{1,3})?))?: (?<pages>[\d–-]+)\./gm,
+                'JSONTemplate': '{"type": "article-journal", "creator": "$<creator>", "title": "$<title>", "container-title": "$<publication>", "volume": "$<volume>", "issue": "$<issue>", "issued": {"literal": "$<date>"}, "page":"$<pages>"}'
             },
             {
                 'style': 'Ross',
                 'type': 'chapter',
-                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})\)\. “(?<title>[À-ž\w\d\s&,'’():?-]+)[.?]” (?<editor>[À-ž\w][.À-ž\w '’,-]+), eds?\. (?<publication>[À-ž\w &'’:,\d]+)\.? (:(?<series>[À-ž\w &'’:]+)(?:, (?<seriesNumber>\d+))? )?\((?<place>[À-ž\w &'’]+): (?<publisher>[À-ž\w &'’]+)\): (?<pages>[\d–-]+)\./gm,
+                //       /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})[a-z]?\)\. “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\d\s&…,'‘’()\/\[\];:?—–-]+)[?.,]?” (?:(?<editor>[À-ž\w][.À-ž\w '’,-]+), eds?\. )?(?<publication>[?—À-ž\w &'’:,\d-]+)\.? (?:(?<series>[À-ž\w &'’:]+)(?:, (?<seriesNumber>\d+))? )?\((?<place>[À-ž\w &'’,]+): (?<publisher>[À-ž\w &'’]+)\):? (?<pages>[\d–-]+)\./gm
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})[a-z]?\)\. “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\d\s&…,'‘’„“()\/\[\];:?—–-]+)[?.,]” (?:(?<editor>[À-ž\w][.À-ž\w '’,-]+), eds?\. )?(?<publication>[?—À-ž\w &'’:,\d()=—–-]+)\.? (?:(?<series>[À-ž\w =&'’:]+)(?:, (?<seriesNumber>\d+))? )?\((?<place>[À-ž\w &'’,]+)[:,] (?<publisher>[À-ž\w &'’-]+)\):? (?<pages>[\d–-]+)\./gm,
                 'JSONTemplate': '{"type": "chapter", "creator": "$<creator>", "editor": {"literal": "$<editor>"}, "title": "$<title>", "container-title": "$<publication>", "publisher-place": "$<place>", "publisher": "$<publisher>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}, "page": "$<pages>"}'
+            },
+            {
+                'style': 'Pages',
+                'type': 'chapter',
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})[a-z]?\)\. “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\d\s&…,'‘’()\/\[\]:?—–-]+)[?.,]” Pages (?<pages>[\d–-]+) in (?:(?<editor>[À-ž\w][.À-ž\w '’,-]+) \(eds?\.\), )?(?<publication>[?—À-ž\w &'’:=,\d-]+)\. (?:(?<series>[À-ž\w &'’:]+) (?:(?<seriesNumber>\d+))?\. )?(?<place>[À-ž\w &'’,]+): (?<publisher>[À-ž\w &'’]+)\./gm,
+                'JSONTemplate': '{"type": "chapter", "creator": "$<creator>", "editor": {"literal": "$<editor>"}, "title": "$<title>", "container-title": "$<publication>", "publisher-place": "$<place>", "publisher": "$<publisher>", "collection-title": "$<series>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}, "page": "$<pages>"}'
+            },
+             {
+                'style': 'Ross',
+                'type': 'thesis',
+                'bibre': /(?<creator>[À-ž\w &.'’,-]+) \((?<date>[0-9]{4,4})[a-z]?\)\. “(?<title>[.À-ž̀-ͯΑ-ϡἀ-ῼﬞ-ﭏ֐-׿\w\d\s&…,'‘’()\/\[\]:?—–-]+)[?.,]” Diss. (?<place>[À-ž\w &'’,.]+)[:,] (?<publisher>[À-ž\w &'’]+)\)?\./gm,
+                'JSONTemplate': '{"type": "thesis", "creator": "$<creator>", "title": "$<title>", "event-place": "$<place>", "genre": "dissertation", "publisher": "$<publisher>", "publisher-place": "$<place>", "collection-number": "$<seriesNumber>", "issued": {"literal": "$<date>"}}'
             },
                 
             {
                 'style': 'APA',
                 'type': 'article-journal',
                 'bibre': /(?<creator>[À-ž\w &.'’,-]+)\. \((?<date>[0-9]{4,4})\)\. (?<title>[À-ž\w\d\s&,'’():?-]+)\. (?<publication>[À-ž\w &'’]+) (?<volume>[\d]{1,3}): (?<pages>[\d–-]+)\./gm,
-                'JSONTemplate': '{"type": "article-journal", "creator": "$<creator>", "title": "$<title>", "publication": "$<publication>", "volume": "$<volume>", "issued": {"literal": "$<date>"}, "page":"$<pages>"}'
+                'JSONTemplate': '{"type": "article-journal", "creator": "$<creator>", "title": "$<title>", "container-title": "$<publication>", "volume": "$<volume>", "issued": {"literal": "$<date>"}, "page":"$<pages>"}'
             },
             {
                 'style': 'APA',
@@ -102,37 +176,43 @@
 
         function parseCreators(fullNamesString, familyNameFirst) {
             if (fullNamesString) {
-                var f = "" + fullNamesString;
-                f = f.replace(" and ", ", ");
-                f = f.replace(" and ", ", ");
-                var fullNames = [];
-                fullNames = f.split(", ");
-                var names = [];
-                var n = 0;
-                if (familyNameFirst) {
-                    names[0] = {
-                        "given": fullNames[1],
-                        "family": fullNames.shift()
-                    };
-                    n = 1;
-                }
-                creatorType="author";
-                for (; n < fullNames.length; n++) {
-                    if (fullNames[n].match(/^\(?eds?\.?\)?/)) {
-                        creatorType="editor"
-                        delete names[n];
-                    } else if (fullNames[n].match(/^\(?[Tt]ransl?\.?\)?/)) {
-                        creatorType="translator"
-                        delete names[n];
-                    } else {
-                        splitPoint = fullNames[n].lastIndexOf(" ");
-                        names.push({
-                            "given": fullNames[n].slice(0, splitPoint),
-                            "family": fullNames[n].slice(splitPoint + 1)
-                        })
+                if (fullNamesString==""){
+                        return (null);
+                } else {
+                        var f = "" + fullNamesString;
+                        f = f.replace(" and ", ", ");
+                        f = f.replace(" and ", ", ");
+                        var fullNames = [];
+                        fullNames = f.split(", ");
+                        var names = [];
+                        var n = 0;
+                        if (fullNames.length>1) {
+                                if (familyNameFirst) {
+                                    names[0] = {
+                                        "given": fullNames[1].replace(",",""),
+                                        "family": fullNames.shift()
+                                    };
+                                    n = 1;
+                                }
+                        }
+                        creatorType="author";
+                        for (; n < fullNames.length; n++) {
+                            if (fullNames[n].match(/^\(?eds?\.?\)?/)) {
+                                creatorType="editor"
+                                delete names[n];
+                            } else if (fullNames[n].match(/^\(?[Tt]ransl?\.?\)?/)) {
+                                creatorType="translator"
+                                delete names[n];
+                            } else {
+                                splitPoint = fullNames[n].lastIndexOf(" ");
+                                names.push({
+                                    "given": fullNames[n].slice(0, splitPoint),
+                                    "family": fullNames[n].slice(splitPoint + 1).replace(",","")
+                                })
+                            }
+                        }
+                        return ({"creatorType": creatorType, "names": names});
                     }
-                }
-                return ({"creatorType": creatorType, "names": names});
             }
         }
 
@@ -157,6 +237,11 @@
             for (var n = 0; n < a.length; n++) {
                 i = a[n];
                 if (i["translator"]) i["translator"] = parseCreators(i["translator"], false);
+                if (i["editor"]) {
+                        if (e=parseCreators(i["editor"].literal)) {
+                                if(e.names) i["editor"] = e.names;
+                        }
+                }
                 c=parseCreators(i["creator"], true);
                 creatorType=c.creatorType?c.creatorType:"author";
                 i[creatorType] = c["names"];
