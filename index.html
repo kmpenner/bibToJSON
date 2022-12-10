@@ -10,7 +10,9 @@
 <body>
     <form>
         Convert bibliography entries:
-        <input type="button" value="Convert" onclick="convert();" id="bConvert" name="bConvert">
+        <input type="button" value="Convert" onclick="convert(document.getElementById('stripLines').checked);" id="bConvert" name="bConvert"> 
+        <input type="checkbox" id="stripLines" name="stripLines" value="strip">
+        <label for="stripLines">Strip line breaks</label>
         <br>
         <textarea id="SourceBox" style="width:45%; height:70%" wrap="hard" rows="14" name="textbox"
             title="bibliography entries" placeholder="ph">Enter bibliography entries to convert here.</textarea>
@@ -448,10 +450,12 @@
             return (JSON.stringify(a));
         }
 
-        function convert() {
-            t = bibToJSON(document.getElementById('SourceBox').value);
-            document.getElementById('TargetBox').value = t;
-            navigator.clipboard.writeText(t);
+        function convert(stripLines) {
+            i = document.getElementById('SourceBox').value;
+            if(stripLines) i=i.replace(/\r?\n|\r/, "");
+             o = bibToJSON(i);
+           document.getElementById('TargetBox').value = o;
+            navigator.clipboard.writeText(o);
         }
     </script>
 
