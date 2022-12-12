@@ -35,7 +35,7 @@
             const nameCharacters="\\."+letters+", &’\\-"; // sometimes ' is needed, but I took it out for 1973
             const nameRE="["+nameCharacters+"]+";
             const placeRE="["+nameCharacters+";&\\/]+";
-            const titleCharacters=nameCharacters+"\\w…=‘‚„“«»°§~()+\\/\\[\\];:?!—–";
+            const titleCharacters=nameCharacters+"\\w…=‘‚„“«»°§~()+\\/\\[\\]:?!—–"; // removed ; 2022-12-12
             const titleRE="["+titleCharacters+"]+";
             const quoteTitleRE="["+titleCharacters+"<>]+";
             const italicTitleRE="["+titleCharacters+"”]+";
@@ -310,7 +310,7 @@
                 },
                 { // Textus article
                         'style':'Textus','type':'article-journal',
-                        'output':"author, “title,” container-title volume.issue (issued): page.",
+                        'output':"author, “title,” container-title volume.issue (issued): page[.;]",
                         'optional': [".issue"]
                 },
  
@@ -322,8 +322,8 @@
                 re=re.replace(/\(/g,"\\(");
                 re=re.replace(/\)/g,"\\)");
                 re=re.replace(/\//g,"\\/");
-                re=re.replace(/\[/g,"\\[");
-                re=re.replace(/\]/g,"\\]");
+//                re=re.replace(/\[/g,"\\[");
+//                re=re.replace(/\]/g,"\\]");
                 return (re);
             }
             function bibRE(bibOutput){
@@ -452,10 +452,12 @@
 
         function convert(stripLines) {
             i = document.getElementById('SourceBox').value;
-            if(stripLines) i=i.replace(/\r?\n|\r/, "");
-             o = bibToJSON(i);
-           document.getElementById('TargetBox').value = o;
-            navigator.clipboard.writeText(o);
+            if(stripLines) i=i.replace(/\r?\n|\r/g, " ");
+            o = bibToJSON(i);
+            if (o != "[]") {
+                document.getElementById('TargetBox').value = o;
+                navigator.clipboard.writeText(o);            
+            } 
         }
     </script>
 
