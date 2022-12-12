@@ -189,7 +189,7 @@
 //                'JSONTemplate': '{"type": "book", "creator": "$<creator>", "title": "$<title>", "publisher": "$<publisher>", "publisher-place": "$<place>", "collection-title": "$<seriesTitle>", "collection-number": "$<series>", "issued": {"literal": "$<date>"}}'
 //            },
 */
-{
+            {
                 'style': '1973',
                 'type': 'chapter',
                 'bibre': /<span style=“font-variant: small-caps;”>(?<AUTHORLAST>[\.A-Za-zÀ-ÿ|Ḁ-ỿ|Ѐ-ԯ|À-ž̀|Α-ϡ|ἀ-ῼ|ἀ-῾|Ā-ſ|ƀ-ɏ|ɐ-ʯʰ-˿̀-ͯͰ-ϿЀ-ӿԀ-ԯԱ-֏א-תᄀ-ᇿ &'’\-]+),<\/span> (?<AUTHORGIVEN>[\.A-Z ]+): <i>(?<CONTAINER_TITLE>[\.A-Za-zÀ-ÿ|Ḁ-ỿ|Ѐ-ԯ|À-ž̀|Α-ϡ|ἀ-ῼ|ἀ-῾|Ā-ſ|ƀ-ɏ|ɐ-ʯʰ-˿̀-ͯͰ-ϿЀ-ӿԀ-ԯԱ-֏א-תᄀ-ᇿ, &'’\-\w…=‘„“()+\/\[\];:?—–<>]+)<\/i> \((?<TITLE>[\.A-Za-zÀ-ÿ|Ḁ-ỿ|Ѐ-ԯ|À-ž̀|Α-ϡ|ἀ-ῼ|ἀ-῾|Ā-ſ|ƀ-ɏ|ɐ-ʯʰ-˿̀-ͯͰ-ϿЀ-ӿԀ-ԯԱ-֏א-תᄀ-ᇿ, &'’\-\w…=‘„“()+\/\[\];:?—–”]+)\)\. \((?<PUBLISHER_PLACE>[\.A-Za-zÀ-ÿ|Ḁ-ỿ|Ѐ-ԯ|À-ž̀|Α-ϡ|ἀ-ῼ|ἀ-῾|Ā-ſ|ƀ-ɏ|ɐ-ʯʰ-˿̀-ͯͰ-ϿЀ-ӿԀ-ԯԱ-֏א-תᄀ-ᇿ, &'’\-;&\/]+), (?<ISSUED>([\w ,]+)?[0-9]{4,4})\)\./gm,
@@ -312,6 +312,11 @@
                         'style':'Textus','type':'article-journal',
                         'output':"author, “title,” container-title volume.issue (issued): page[.;]",
                         'optional': [".issue"]
+                },
+                { // Textus book in series
+                        'style':'Textus','type':'book',
+                        'output':"author, title, collection-title collection-number (publisher-place: publisher, issued), page[.;]",
+                        'optional': [", page"]
                 },
  
 
