@@ -33,10 +33,10 @@
                 letters+="א-ת|֯-ׇ"; // Hebrew
                 letters+="ᄀ-ᇿ가-힣"; //Hangul
             const nameCharacters="\\."+letters+", &’\\-"; // sometimes ' is needed, but I took it out for 1973
-            const nameRE="["+nameCharacters+"]+";
-            const placeRE="["+nameCharacters+";&\\/]+";
-            const titleCharacters=nameCharacters+"\\w…=‘‚„“«»°§~()+\\/\\[\\]:?!—–"; // removed ; 2022-12-12
-            const titleRE="["+titleCharacters+"]+";
+            const nameRE=letters+"["+nameCharacters+"]+";
+            const placeRE=letters+"["+nameCharacters+";&\\/]+";
+            const titleCharacters=letters+nameCharacters+"\\w…=‘‚„“«»°§~()+\\/\\[\\]:?!—–"; // removed ; 2022-12-12
+            const titleRE=letters+"["+titleCharacters+"]+";
             const quoteTitleRE="["+titleCharacters+"<>]+";
             const italicTitleRE="["+titleCharacters+"”]+";
             const numberRE="[\\d]{1,4}";
@@ -308,17 +308,27 @@
                         'output':"author: title (publisher-place, issued) volume, page.",
                         'optional': [" volume",", page"]
                 },
-                { // Textus article
+                { // Textus article from Word
+                        'style':'Textus Word','type':'article-journal',
+                        'output':"author, “title,” <i>container-title</i> volume.issue (issued): page[.;]",
+                        'optional': [".issue"]
+                },
+                { // Textus book in series from Word
+                        'style':'Textus Word','type':'book',
+                        'output':"author, <i>title</i>, number-of-volumes vols., collection-title collection-number (publisher-place: publisher, issued), page[.;]",
+                        'optional': ["number-of-volumes vols., ", "collection-number ", ", page"]
+                },
+                { // Textus article from PDF
                         'style':'Textus','type':'article-journal',
                         'output':"author, “title,” container-title volume.issue (issued): page[.;]",
                         'optional': [".issue"]
                 },
-                { // Textus book in series
+                { // Textus book in series from PDF
                         'style':'Textus','type':'book',
-                        'output':"author, title, collection-title collection-number (publisher-place: publisher, issued), page[.;]",
-                        'optional': [", page"]
+                        'output':"author, title, number-of-volumes vols., collection-title collection-number (publisher-place: publisher, issued), page[.;]",
+                        'optional': ["number-of-volumes vols., ", "collection-number ", ", page"]
                 },
- 
+
 
         ];
             function reEscape(s){
